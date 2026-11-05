@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ahorra.pe</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6f8;--ink:#0f1b2d;--muted:#5b687a;--line:#dde3ea;--best:#0a7d4f;--bestbg:#e3f5ec;--bar:#c9d3df;--accent:#ffb400;--brand:#d91e36;--font:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:var(--font);line-height:1.45}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px}
+.logo{font-weight:800;font-size:26px;letter-spacing:-.03em;padding:18px 0 4px}
+.logo b{color:var(--brand)}
+.logo i{font-style:normal;background:var(--accent);border-radius:6px;padding:0 7px;margin-left:6px;font-size:.6em;vertical-align:.18em}
+h1{font-size:clamp(30px,5.6vw,52px);line-height:1.04;letter-spacing:-.035em;margin:18px 0 12px;font-weight:800;max-width:16ch}
+.sub{color:var(--muted);margin:0 0 20px;max-width:54ch;font-size:17px}
+.search{display:flex;gap:8px;border:2px solid var(--ink);border-radius:14px;padding:6px;max-width:620px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:17px;padding:10px 12px;outline:none}
+.search button{border:0;background:var(--ink);color:#fff;font:inherit;font-weight:600;border-radius:9px;padding:0 20px;cursor:pointer}
+.search:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:20px 0 12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip:focus-visible,select:focus-visible,.search button:focus-visible,.more:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sel{display:flex;gap:10px;flex-wrap:wrap;font-size:14px}
+select{font:inherit;font-size:14px;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.count{color:var(--muted);font-size:14px;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+.ph{position:relative;height:170px;background:var(--bg);display:grid;place-items:center;font-size:56px}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.body{padding:14px}
+.body h2{font-size:16px;margin:0 0 2px;line-height:1.25;font-weight:600}
+.body small{color:var(--muted)}
+.save{display:inline-block;background:var(--bestbg);color:var(--best);font-weight:800;font-size:13px;border-radius:6px;padding:2px 8px;margin:10px 0}
+.row{display:grid;grid-template-columns:90px 1fr 68px;gap:8px;align-items:center;font-size:13.5px;padding:3px 0}
+.track{height:9px;background:var(--bg);border-radius:5px;overflow:hidden}
+.fill{display:block;height:100%;background:var(--bar);border-radius:5px}
+.p{text-align:right;font-variant-numeric:tabular-nums}
+.row.best{font-weight:800;color:var(--best)}
+.row.best .fill{background:var(--best)}
+.empty{padding:40px 0;color:var(--muted);text-align:center;grid-column:1/-1}
+.more{display:block;margin:22px auto 8px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:inherit;font-weight:600;border-radius:12px;padding:10px 26px;cursor:pointer}
+footer{border-top:1px solid var(--line);margin-top:24px;padding:18px 0 28px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="logo">ahorra<b>.pe</b><i>moda</i></div>
+<h1>Tu outfit, al mejor precio.</h1>
+<p class="sub">Compara ropa y zapatillas para jóvenes de 18 a 25 años en Zara, H&amp;M, Falabella, Ripley y más tiendas del Perú.</p>
+<form class="search" role="search" onsubmit="return false">
+<input id="q" type="search" placeholder="Busca: hoodie, jean baggy, Air Force 1…" aria-label="Buscar prenda" autocomplete="off">
+<button type="button" id="go">Comparar</button>
+</form>
+<div class="bar">
+<div class="chips" id="chips" role="group" aria-label="Categorías"></div>
+<div class="sel">
+<label>Para: <select id="g"><option>Todos</option><option>Mujer</option><option>Hombre</option></select></label>
+<label>Tienda: <select id="t"></select></label>
+<label>Ordenar: <select id="sort"><option value="save">Mayor ahorro</option><option value="low">Precio más bajo</option><option value="name">Nombre A–Z</option></select></label>
+</div>
+</div>
+<p class="count" id="count" aria-live="polite"></p>
+<main class="grid" id="grid"></main>
+<button class="more" id="more" type="button">Ver más</button>
+</div>
+<footer><div class="wrap">Los precios son de ejemplo. Para cambiarlos o agregar fotos, edita la lista PRODUCTOS del código.</div></footer>
+<script>
+/* TIENDAS: el orden de los precios en cada producto sigue este orden. Usa 0 si la tienda no lo vende. */
+var TIENDAS=["Falabella","Ripley","Oechsle","Mercado Libre","Platanitos","Zara","H&M"];
+/* PRODUCTOS: [nombre, categoría, emoji, para (Mujer/Hombre/Unisex), [precios], foto] */
+/* foto: pega el ID de un archivo de Google Drive (compartido con "Cualquier persona con el enlace") o una URL https completa. Déjala vacía para mostrar el emoji. */
+var PRODUCTOS=[
+["Polo oversize algodón","Polos y tops","👕","Unisex",[45,42,49.9,35,0,79.9,39.9],""],
+["Polo estampado streetwear","Polos y tops","👕","Hombre",[59.9,55,0,45,49.9,89.9,49.9],""],
+["Crop top básico","Polos y tops","👚","Mujer",[29.9,34.9,0,24.9,27.9,59,29.9],""],
+["Body manga larga","Polos y tops","👚","Mujer",[39.9,44.9,42,32,35.9,69.9,39.9],""],
+["Camisa oxford","Polos y tops","👔","Hombre",[89.9,84.9,94.9,69,0,169,119],""],
+["Camisa de lino","Polos y tops","👔","Hombre",[99.9,0,89.9,75,0,189,129],""],
+["Blusa satinada","Polos y tops","👚","Mujer",[59.9,64.9,0,49.9,54.9,129,79.9],""],
+["Polo deportivo dry-fit","Polos y tops","🎽","Unisex",[49.9,44.9,52,39,0,0,49.9],""],
+["Top deportivo","Polos y tops","🎽","Mujer",[39.9,36.9,0,29.9,34.9,0,39.9],""],
+["Polo manga larga básico","Polos y tops","👕","Unisex",[49,52,0,39,0,79.9,39.9],""],
+["Hoodie oversize","Hoodies y casacas","🧥","Unisex",[119,109.9,124.9,89,99.9,189,129],""],
+["Polera con cierre","Hoodies y casacas","🧥","Unisex",[109,115,0,85,0,199,139],""],
+["Casaca de jean","Hoodies y casacas","🧥","Unisex",[149.9,139,159.9,119,0,259,179],""],
+["Casaca bomber","Hoodies y casacas","🧥","Unisex",[169,159.9,0,129,149.9,299,199],""],
+["Casaca cortaviento","Hoodies y casacas","🧥","Unisex",[149.9,139,159.9,115,0,249,169],""],
+["Casaca puffer","Hoodies y casacas","🧥","Mujer",[199,189.9,209,159,0,349,249],""],
+["Cardigan tejido","Hoodies y casacas","🧶","Mujer",[89.9,0,94.9,69.9,79.9,169,119],""],
+["Chaleco acolchado","Hoodies y casacas","🧥","Unisex",[129,119.9,0,99,0,229,149],""],
+["Jean baggy","Pantalones y jeans","👖","Unisex",[129.9,119,134.9,99,109.9,199,149],""],
+["Jean slim fit","Pantalones y jeans","👖","Hombre",[119.9,109.9,124.9,89,0,189,139],""],
+["Jean mom fit","Pantalones y jeans","👖","Mujer",[119.9,104.9,0,94.9,99.9,199,149],""],
+["Jean wide leg","Pantalones y jeans","👖","Mujer",[139,129.9,0,109,119.9,219,159],""],
+["Pantalón cargo","Pantalones y jeans","👖","Unisex",[119,125,0,95,99.9,189,139],""],
+["Jogger deportivo","Pantalones y jeans","👖","Unisex",[79.9,74.9,84.9,59,0,139,89.9],""],
+["Short de jean","Pantalones y jeans","🩳","Mujer",[59.9,64.9,0,45,49.9,119,69.9],""],
+["Short deportivo","Pantalones y jeans","🩳","Hombre",[39.9,36.9,42,29,0,0,49.9],""],
+["Legging deportivo","Pantalones y jeans","🩱","Mujer",[49.9,44.9,0,35,39.9,0,59.9],""],
+["Pantalón de vestir slim","Pantalones y jeans","👖","Hombre",[109.9,99.9,114.9,85,0,229,149],""],
+["Vestido floral midi","Vestidos y faldas","👗","Mujer",[79.9,89,94.9,0,69.9,199,129],""],
+["Vestido negro corto","Vestidos y faldas","👗","Mujer",[89.9,84.9,0,65,69.9,179,99.9],""],
+["Vestido de fiesta satinado","Vestidos y faldas","👗","Mujer",[149,159.9,0,119,129.9,299,189],""],
+["Falda plisada","Vestidos y faldas","👗","Mujer",[69.9,74.9,0,54.9,59.9,149,89.9],""],
+["Falda de jean mini","Vestidos y faldas","👗","Mujer",[69.9,64.9,72,49.9,0,129,79.9],""],
+["Enterizo corto","Vestidos y faldas","👗","Mujer",[119,129.9,0,95,99.9,189,129],""],
+["Conjunto de 2 piezas","Vestidos y faldas","👗","Mujer",[99.9,109,0,79,84.9,219,149],""],
+["Vestido casual camisero","Vestidos y faldas","👗","Mujer",[89.9,0,94.9,69.9,74.9,189,119],""],
+["Nike Air Force 1","Zapatillas","👟","Unisex",[499,479,519,449,0,0,0],""],
+["Adidas Samba OG","Zapatillas","👟","Unisex",[459,449,479,419,0,0,0],""],
+["Nike Revolution 7","Zapatillas","👟","Unisex",[259,269,279,239,0,0,0],""],
+["Adidas Runfalcon","Zapatillas","👟","Unisex",[249,229,259,219,0,0,0],""],
+["Puma Caven","Zapatillas","👟","Unisex",[289,279,299,249,0,0,0],""],
+["Converse Chuck Taylor","Zapatillas","👟","Unisex",[289,0,279,239,0,0,0],""],
+["Vans Old Skool","Zapatillas","👟","Unisex",[359,349,369,309,0,0,0],""],
+["New Balance 574","Zapatillas","👟","Unisex",[429,419,449,379,0,0,0],""],
+["Zapatillas urbanas blancas","Zapatillas","👟","Unisex",[149.9,139,159.9,109,119.9,249,0],""],
+["Zapatillas chunky","Zapatillas","👟","Mujer",[179,169.9,0,129,139.9,279,0],""],
+["Zapatillas de running","Zapatillas","👟","Hombre",[199,189,209,159,0,0,0],""],
+["Botines casuales","Zapatillas","🥾","Unisex",[199,209,0,159,169.9,329,219],""],
+["Gorra snapback","Accesorios","🧢","Unisex",[49.9,44.9,0,29.9,0,89.9,49.9],""],
+["Mochila urbana","Accesorios","🎒","Unisex",[89.9,84.9,94.9,64.9,0,199,99.9],""],
+["Cinturón de cuero","Accesorios","👜","Unisex",[59.9,54.9,0,39.9,0,109,59.9],""],
+["Gafas de sol","Accesorios","🕶️","Unisex",[69.9,0,74.9,39.9,49.9,139,59.9],""],
+["Medias pack x3","Accesorios","🧦","Unisex",[24.9,22.9,26.9,17.9,0,49.9,29.9],""],
+["Riñonera","Accesorios","👜","Unisex",[49.9,54.9,0,35,39.9,129,69.9],""]
+];
+/* Para crear varias páginas con el mismo código, cambia estos dos valores. Ejemplo: CATEGORIA_INICIAL="Zapatillas" o TIENDA_INICIAL="Zara". */
+var CATEGORIA_INICIAL="Todas",TIENDA_INICIAL="Todas";
+var cat=CATEGORIA_INICIAL,page=1,STEP=18,$=function(i){return document.getElementById(i)};
+var cats=["Todas"].concat(PRODUCTOS.map(function(p){return p[1]}).filter(function(v,i,a){return a.indexOf(v)===i}));
+function money(v){return "S/ "+v.toLocaleString("es-PE",{minimumFractionDigits:v%1?2:0,maximumFractionDigits:2})}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function photo(f){if(!f)return"";var u=/^https?:/.test(f)?f:"https://drive.google.com/thumbnail?id="+f+"&sz=w600";return '<img src="'+esc(u)+'" alt="" loading="lazy" onerror="this.remove()">'}
+function info(p){var e=[];p[4].forEach(function(v,i){if(v>0)e.push([TIENDAS[i],v])});e.sort(function(a,b){return a[1]-b[1]});return{e:e,min:e[0][1],max:e[e.length-1][1]}}
+function chips(){$("chips").innerHTML=cats.map(function(c){return '<button class="chip" type="button" aria-pressed="'+(c===cat)+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join("")}
+function render(){
+var q=$("q").value.trim().toLowerCase(),o=$("sort").value,g=$("g").value,t=$("t").value;
+var l=PRODUCTOS.filter(function(p){return(cat==="Todas"||p[1]===cat)&&(g==="Todos"||p[3]===g||p[3]==="Unisex")&&(t==="Todas"||p[4][TIENDAS.indexOf(t)]>0)&&p[0].toLowerCase().indexOf(q)>-1});
+l.sort(function(a,b){var x=info(a),y=info(b);return o==="low"?x.min-y.min:o==="name"?a[0].localeCompare(b[0],"es"):(y.max-y.min)-(x.max-x.min)});
+$("count").textContent=l.length+(l.length===1?" producto":" productos");
+$("more").style.display=l.length>page*STEP?"block":"none";
+if(!l.length){$("grid").innerHTML='<div class="empty">No encontramos ese producto. Prueba con otra palabra o cambia los filtros.</div>';return}
+$("grid").innerHTML=l.slice(0,page*STEP).map(function(p){var i=info(p),d=i.max-i.min;
+return '<article class="card"><div class="ph"><span aria-hidden="true">'+p[2]+'</span>'+photo(p[5])+'</div><div class="body"><h2>'+esc(p[0])+'</h2><small>'+esc(p[1])+' · '+esc(p[3])+' · '+i.e.length+' tiendas</small><br>'
++'<span class="save">Ahorras '+money(d)+'</span>'
++i.e.map(function(r,k){var w=Math.max(18,Math.round(r[1]/i.max*100));return '<div class="row'+(k===0?' best':'')+'"><span>'+esc(r[0])+'</span><span class="track"><span class="fill" style="width:'+w+'%"></span></span><span class="p">'+money(r[1])+'</span></div>'}).join("")+'</div></article>'}).join("")}
+function reset(){page=1;render()}
+$("chips").addEventListener("click",function(e){var b=e.target.closest(".chip");if(b){cat=b.getAttribute("data-c");chips();reset()}});
+$("q").addEventListener("input",reset);$("go").addEventListener("click",reset);$("sort").addEventListener("change",reset);$("g").addEventListener("change",reset);$("t").addEventListener("change",reset);
+$("more").addEventListener("click",function(){page++;render()});
+$("t").innerHTML=["Todas"].concat(TIENDAS).map(function(x){return "<option>"+esc(x)+"</option>"}).join("");
+$("t").value=TIENDA_INICIAL;
+chips();render();
+</script>
+</body>
+</html>
