@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cargar fotos · AHORRA PE</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#f6f1e4;color:#1b1b18;margin:0;padding:16px}
+.w{max-width:900px;margin:auto}h1{color:#0f3d2e;margin:8px 0}
+.top{position:sticky;top:0;background:#0f3d2e;color:#fff;padding:12px;border-radius:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;z-index:2}
+button{background:#d9c98f;color:#0f3d2e;border:0;border-radius:999px;padding:9px 16px;font-weight:700;cursor:pointer}
+.r{background:#fff;border:1px solid #e3dcc8;border-radius:12px;padding:12px;margin:10px 0;display:grid;grid-template-columns:70px 1fr;gap:12px}
+.pv{width:70px;height:70px;background:#ece4d0;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:11px;color:#6c6a60;text-align:center}
+.pv img{width:100%;height:100%;object-fit:cover}
+.r b{display:block}.r a{font-size:13px;color:#1b5e43}
+input{width:100%;padding:9px;border:1px solid #e3dcc8;border-radius:8px;margin-top:6px;font-size:14px}
+</style></head><body><div class="w">
+<h1>Cargar fotos</h1>
+<p>1) Toca “Abrir tienda”. 2) Clic derecho sobre la foto → “Copiar dirección de imagen”. 3) Pégala abajo. 4) Al final toca “Descargar fotos.json” y súbelo a GitHub junto a <code>index.html</code>. Lo que escribas se guarda en este navegador.</p>
+<div class="top"><span id="c"></span><button id="d">Descargar fotos.json</button></div>
+<div id="l"></div></div>
+<script>
+const K="ap_fotos";let M={};try{M=JSON.parse(localStorage.getItem(K))||{}}catch(e){}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function cnt(){$c=document.getElementById("c");$c.textContent=Object.values(M).filter(Boolean).length+" fotos puestas"}
+fetch("index.html").then(r=>r.text()).then(h=>{
+ const seg=h.slice(h.indexOf("const FB="),h.indexOf("const TIENDAS"));
+ const P=new Function(seg+";return PRODUCTOS")();const seen={},rows=[];
+ P.forEach(p=>p.ofertas.forEach(o=>{if(!seen[o.url]){seen[o.url]=1;rows.push({n:p.nombre,t:o.tienda,u:o.url})}}));
+ document.getElementById("l").innerHTML=rows.map((x,i)=>`<div class="r"><div class="pv" id="p${i}">${M[x.u]?`<img src="${esc(M[x.u])}">`:"Sin foto"}</div><div><b>${esc(x.n)} · ${esc(x.t)}</b><a href="${esc(x.u)}" target="_blank" rel="noopener noreferrer">Abrir tienda</a><input data-i="${i}" placeholder="Pega aquí la dirección de la imagen (https://…)" value="${esc(M[x.u]||"")}"></div></div>`).join("");
+ document.getElementById("l").oninput=e=>{const i=e.target.dataset.i;if(i==null)return;const v=e.target.value.trim();M[rows[i].u]=v;try{localStorage.setItem(K,JSON.stringify(M))}catch(_){}
+  document.getElementById("p"+i).innerHTML=v?`<img src="${esc(v)}" onerror="this.parentNode.textContent='No carga'">`:"Sin foto";cnt()};
+ cnt()}).catch(()=>{document.getElementById("l").textContent="No pude leer index.html. Abre esta página desde tu dirección de GitHub, junto a index.html."});
+document.getElementById("d").onclick=()=>{const o={};for(const k in M)if(M[k])o[k]=M[k];
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,1)],{type:"application/json"}));a.download="fotos.json";a.click()};
+</script></body></html>
